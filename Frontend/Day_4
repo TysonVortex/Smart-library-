@@ -1,0 +1,169 @@
+Great! Welcome to Day 4 of your project.
+
+
+---
+
+✅ Day 4: Display Books & Search Functionality
+
+
+---
+
+🎯 Today’s Goals:
+
+1. Show all books in a table format from the database
+
+
+2. Implement search by title, author, or ISBN
+
+
+3. Use a clean, responsive UI (Bootstrap)
+
+
+
+
+---
+
+📁 File Structure Update:
+
+frontend/
+├── add_book.html
+├── view_books.php  ← new (shows book list + search)
+
+backend/
+├── db.php
+├── insert_book.php
+
+
+---
+
+🧾 Step 1: Create view_books.php (inside frontend/)
+
+<?php
+include '../backend/db.php';
+
+$search = '';
+if (isset($_GET['search'])) {
+    $search = trim($_GET['search']);
+    $sql = "SELECT * FROM book WHERE is_deleted = FALSE AND 
+            (title LIKE ? OR author LIKE ? OR isbn LIKE ?)";
+    $searchParam = "%$search%";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $searchParam, $searchParam, $searchParam);
+} else {
+    $sql = "SELECT * FROM book WHERE is_deleted = FALSE";
+    $stmt = $conn->prepare($sql);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>View Books</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="p-5 bg-light">
+<div class="container">
+  <h2 class="mb-4">Book Records</h2>
+
+  <form method="GET" class="mb-3">
+    <input type="text" name="search" placeholder="Search by title, author, ISBN" value="<?= htmlspecialchars($search) ?>" class="form-control" />
+    <button type="submit" class="btn btn-secondary mt-2">Search</button>
+  </form>
+
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>ISBN</th>
+        <th>Category</th>
+        <th>Quantity</th>
+        <th>Created</th>
+        <th>Updated</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php if ($result->num_rows > 0): ?>
+        <?php while($row = $result->fetch_assoc()): ?>
+          <tr>
+            <td><?= $row['book_id'] ?></td>
+            <td><?= htmlspecialchars($row['title']) ?></td>
+            <td><?= htmlspecialchars($row['author']) ?></td>
+            <td><?= htmlspecialchars($row['isbn']) ?></td>
+            <td><?= htmlspecialchars($row['category']) ?></td>
+            <td><?= $row['quantity'] ?></td>
+            <td><?= $row['created_at'] ?></td>
+            <td><?= $row['updated_at'] ?></td>
+          </tr>
+        <?php endwhile; ?>
+      <?php else: ?>
+        <tr><td colspan="8" class="text-center">No books found.</td></tr>
+      <?php endif; ?>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
+
+<?php
+$stmt->close();
+$conn->close();
+?>
+
+
+---
+
+🔍 What This Does:
+
+Connects to the database
+
+Shows only non-deleted (is_deleted = FALSE) records
+
+Supports searching by title, author, or ISBN
+
+Clean Bootstrap table layout
+
+
+
+---
+
+✅ Test the Page
+
+1. Open http://localhost/your-folder/frontend/view_books.php
+
+
+2. Try viewing all books
+
+
+3. Use search box to filter by:
+
+Partial title (e.g., Harry)
+
+Author name (e.g., Rowling)
+
+ISBN
+
+
+
+
+
+---
+
+📌 Deliverables for Day 4:
+
+✅ view_books.php with full list + search box
+
+✅ Search working with partial matches
+
+✅ Bootstrap table showing book details
+
+
+
+---
+
+Let me know when you’re ready, and we’ll move to Day 5: Update Book Details (Edit + Save)!
+
