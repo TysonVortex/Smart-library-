@@ -1,0 +1,178 @@
+Awesome! You're building solid momentum. Let's move to:
+
+
+---
+
+✅ Day 5: Update Book Details (Edit + Save)
+
+
+---
+
+🎯 Today’s Goals:
+
+1. Add an Edit button in the book list
+
+
+2. Create a pre-filled Edit Book form
+
+
+3. Save updated book details using PHP
+
+
+
+
+---
+
+📁 File Structure Update:
+
+frontend/
+├── edit_book.php       ← new (edit form)
+
+backend/
+├── update_book.php     ← new (handles update)
+
+
+---
+
+🧱 Step 1: Add “Edit” Button in view_books.php
+
+Inside the table, add an Edit column:
+
+<th>Actions</th>
+
+And in each row:
+
+<td>
+  <a href="edit_book.php?id=<?= $row['book_id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+</td>
+
+
+---
+
+📝 Step 2: Create edit_book.php (in frontend/)
+
+<?php
+include '../backend/db.php';
+
+if (!isset($_GET['id'])) {
+    die("No book ID provided.");
+}
+$id = $_GET['id'];
+
+$stmt = $conn->prepare("SELECT * FROM book WHERE book_id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+$book = $result->fetch_assoc();
+$stmt->close();
+$conn->close();
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Book</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="p-5 bg-light">
+<div class="container">
+  <h2 class="mb-4">Edit Book</h2>
+  <form action="../backend/update_book.php" method="POST" class="border p-4 bg-white shadow-sm rounded">
+    <input type="hidden" name="book_id" value="<?= $book['book_id'] ?>">
+
+    <div class="mb-3">
+      <label>Title</label>
+      <input type="text" name="title" class="form-control" value="<?= htmlspecialchars($book['title']) ?>" required>
+    </div>
+    <div class="mb-3">
+      <label>Author</label>
+      <input type="text" name="author" class="form-control" value="<?= htmlspecialchars($book['author']) ?>" required>
+    </div>
+    <div class="mb-3">
+      <label>ISBN</label>
+      <input type="text" name="isbn" class="form-control" value="<?= htmlspecialchars($book['isbn']) ?>" required>
+    </div>
+    <div class="mb-3">
+      <label>Category</label>
+      <input type="text" name="category" class="form-control" value="<?= htmlspecialchars($book['category']) ?>">
+    </div>
+    <div class="mb-3">
+      <label>Quantity</label>
+      <input type="number" name="quantity" class="form-control" value="<?= $book['quantity'] ?>" required>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save Changes</button>
+    <a href="view_books.php" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+</body>
+</html>
+
+
+---
+
+🛠️ Step 3: Create update_book.php (in backend/)
+
+<?php
+include 'db.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $book_id  = $_POST['book_id'];
+    $title    = $_POST['title'];
+    $author   = $_POST['author'];
+    $isbn     = $_POST['isbn'];
+    $category = $_POST['category'];
+    $quantity = $_POST['quantity'];
+
+    $stmt = $conn->prepare("UPDATE book SET title=?, author=?, isbn=?, category=?, quantity=? WHERE book_id=?");
+    $stmt->bind_param("ssssii", $title, $author, $isbn, $category, $quantity, $book_id);
+
+    if ($stmt->execute()) {
+        echo "✅ Book updated successfully. <a href='../frontend/view_books.php'>Back to list</a>";
+    } else {
+        echo "❌ Error updating book: " . $stmt->error;
+    }
+
+    $stmt->close();
+    $conn->close();
+}
+?>
+
+
+---
+
+✅ Test the Flow:
+
+1. Go to view_books.php
+
+
+2. Click Edit next to a book
+
+
+3. Update the details and click “Save Changes”
+
+
+4. Check that it reflects correctly in the book list
+
+
+
+
+---
+
+📌 Deliverables for Day 5:
+
+✅ Edit button added in view
+
+✅ edit_book.php pre-filled form
+
+✅ update_book.php working
+
+✅ End-to-end test for book update
+
+
+
+---
+
+You're almost ready with all CRUD operations!
+Let me know when you're ready for Day 6: Soft Delete (Mark as Deleted).
+
