@@ -176,3 +176,116 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 You're almost ready with all CRUD operations!
 Let me know when you're ready for Day 6: Soft Delete (Mark as Deleted).
 
+
+
+
+
+Great question! Let me walk you through exactly where and how to add the Edit button in view_books.php.
+
+
+---
+
+✅ Step-by-Step: Add "Edit" Button in view_books.php
+
+
+---
+
+🧾 Example Code Overview:
+
+You already have a table displaying books like this:
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Author</th>
+      <th>ISBN</th>
+      <th>Category</th>
+      <th>Quantity</th>
+      <th>Created</th>
+      <th>Updated</th>
+      <!-- ADD THIS -->
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+You need to add one more column in the header called Actions (for Edit button), like this:
+
+✅ Step 1.1: Modify the <thead> section
+
+<thead class="table-dark">
+  <tr>
+    <th>ID</th>
+    <th>Title</th>
+    <th>Author</th>
+    <th>ISBN</th>
+    <th>Category</th>
+    <th>Quantity</th>
+    <th>Created</th>
+    <th>Updated</th>
+    <th>Actions</th> <!-- 🟢 Add this -->
+  </tr>
+</thead>
+
+
+---
+
+✅ Step 1.2: Modify the <tbody> section
+
+Inside your existing loop (while($row = $result->fetch_assoc())), you're outputting each row like this:
+
+<tr>
+  <td><?= $row['book_id'] ?></td>
+  <td><?= htmlspecialchars($row['title']) ?></td>
+  <td><?= htmlspecialchars($row['author']) ?></td>
+  <td><?= htmlspecialchars($row['isbn']) ?></td>
+  <td><?= htmlspecialchars($row['category']) ?></td>
+  <td><?= $row['quantity'] ?></td>
+  <td><?= $row['created_at'] ?></td>
+  <td><?= $row['updated_at'] ?></td>
+  <!-- 🟢 Add this for Edit button -->
+  <td>
+    <a href="edit_book.php?id=<?= $row['book_id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+  </td>
+</tr>
+
+
+---
+
+✅ Final Table Structure (Shortened):
+
+<table>
+  <thead>
+    <tr>
+      <!-- ... other columns ... -->
+      <th>Actions</th> <!-- Add this -->
+    </tr>
+  </thead>
+  <tbody>
+    <?php while($row = $result->fetch_assoc()): ?>
+      <tr>
+        <!-- ... other <td> values ... -->
+        <td>
+          <a href="edit_book.php?id=<?= $row['book_id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+        </td>
+      </tr>
+    <?php endwhile; ?>
+  </tbody>
+</table>
+
+
+---
+
+🧪 Now What Happens?
+
+When user clicks the Edit button, it takes them to edit_book.php?id=3 (or whatever the book ID is).
+
+That page pre-fills the form with that book's info.
+
+
+
+---
+
+Let me know once you've added it or if you'd like me to generate the entire updated view_books.php file!
+
