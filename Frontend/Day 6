@@ -1,0 +1,136 @@
+Great! Let’s implement Soft Delete today—an essential feature that lets you mark books as deleted without permanently removing them from the database.
+
+
+---
+
+✅ Day 6: Delete Book (Soft Delete with Confirmation)
+
+
+---
+
+🎯 Goals:
+
+1. Add a Delete button next to the Edit button
+
+
+2. On click, mark is_deleted = TRUE instead of removing the row
+
+
+3. Confirm deletion with a popup
+
+
+4. Books marked as deleted will not show up in the book list
+
+
+
+
+---
+
+📁 File Structure Update:
+
+frontend/
+├── view_books.php      ← Update to show Delete button
+backend/
+├── delete_book.php     ← New: handles soft delete
+
+
+---
+
+🧱 Step 1: Add “Delete” Button in view_books.php
+
+Modify the Actions column inside the <td> row to:
+
+<td>
+  <a href="edit_book.php?id=<?= $row['book_id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+  <a href="../backend/delete_book.php?id=<?= $row['book_id'] ?>" 
+     class="btn btn-sm btn-danger"
+     onclick="return confirm('Are you sure you want to delete this book?');">Delete</a>
+</td>
+
+
+---
+
+⚙️ Step 2: Create delete_book.php in backend/
+
+<?php
+include 'db.php';
+
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+
+    $stmt = $conn->prepare("UPDATE book SET is_deleted = TRUE WHERE book_id = ?");
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
+        header("Location: ../frontend/view_books.php?deleted=1");
+        exit;
+    } else {
+        echo "❌ Error: " . $stmt->error;
+    }
+
+    $stmt->close();
+} else {
+    echo "❌ No book ID provided.";
+}
+
+$conn->close();
+?>
+
+
+---
+
+✅ Optional: Show Alert After Deletion
+
+At the top of view_books.php, under <body> and inside .container, add this code:
+
+<?php if (isset($_GET['deleted'])): ?>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    Book deleted successfully.
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<?php endif; ?>
+
+
+---
+
+✅ Final Flow:
+
+Users see Edit and Delete buttons.
+
+Clicking Delete asks for confirmation.
+
+If confirmed, book is soft deleted (is_deleted = TRUE).
+
+Book disappears from list (but stays in DB for auditing).
+
+
+
+---
+
+📌 Deliverables for Day 6:
+
+✅ Delete button with confirmation
+
+✅ delete_book.php script
+
+✅ Deletion success message (optional)
+
+✅ Tested and verified soft delete
+
+
+
+---
+
+You now have a fully working CRUD project:
+
+Create ✅
+
+Read/Search ✅
+
+Update ✅
+
+Delete (Soft) ✅
+
+
+Would you like to proceed to Day 7: UI Polishing & Navigation or add extra features like pagination, export to PDF, login system, etc.?
+
