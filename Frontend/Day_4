@@ -69,7 +69,8 @@ $result = $stmt->get_result();
   <h2 class="mb-4">Book Records</h2>
 
   <form method="GET" class="mb-3">
-    <input type="text" name="search" placeholder="Search by title, author, ISBN" value="<?= htmlspecialchars($search) ?>" class="form-control" />
+    <input type="text" name="search" placeholder="Search by title, author, ISBN"
+           value="<?= htmlspecialchars($search) ?>" class="form-control" />
     <button type="submit" class="btn btn-secondary mt-2">Search</button>
   </form>
 
@@ -84,6 +85,7 @@ $result = $stmt->get_result();
         <th>Quantity</th>
         <th>Created</th>
         <th>Updated</th>
+        <th>Actions</th> <!-- 🟢 NEW: Actions column -->
       </tr>
     </thead>
     <tbody>
@@ -98,10 +100,13 @@ $result = $stmt->get_result();
             <td><?= $row['quantity'] ?></td>
             <td><?= $row['created_at'] ?></td>
             <td><?= $row['updated_at'] ?></td>
+            <td>
+              <a href="edit_book.php?id=<?= $row['book_id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+            </td>
           </tr>
         <?php endwhile; ?>
       <?php else: ?>
-        <tr><td colspan="8" class="text-center">No books found.</td></tr>
+        <tr><td colspan="9" class="text-center">No books found.</td></tr>
       <?php endif; ?>
     </tbody>
   </table>
