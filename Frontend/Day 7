@@ -1,4 +1,4 @@
-Perfect! Since you're required to include both a Client Side (students) and an Admin Side (librarian/staff), here's how we’ll divide and plan things going forward.
+itPerfect! Since you're required to include both a Client Side (students) and an Admin Side (librarian/staff), here's how we’ll divide and plan things going forward.
 
 
 ---
@@ -126,4 +126,74 @@ Let’s finalize the basic admin-client structure in this order:
 ---
 
 Let me know and I’ll begin with Step 1: Splitting the code into Admin and Client folders + removing admin actions from client side view. Shall I proceed with that?
+
+Great point! You're being methodical—which is exactly how a good developer works.
+
+Let’s adapt your existing SmartLibraryProject/ structure to support Admin Side and Client Side while keeping things clean and logical.
+
+
+---
+
+✅ Updated Folder Structure with Admin and Client Areas
+
+SmartLibraryProject/
+├── docs/
+│   └── requirements.txt              # Project planning docs
+├── backend/
+│   ├── db.php                        # Common DB connection
+│   ├── insert_book.php              # Admin-only
+│   ├── update_book.php              # Admin-only
+│   ├── delete_book.php              # Admin-only (soft delete)
+│   ├── process_login_admin.php      # Login backend (admin)
+│   ├── process_login_client.php     # Login backend (client)
+│   ├── handle_request.php           # Handles book requests (client)
+│   └── handle_request_update.php    # Admin updates status (approve/reject)
+├── admin/
+│   ├── login.php                     # Admin login
+│   ├── dashboard.php                # Admin homepage (redirect here after login)
+│   ├── view_books.php               # With Edit/Delete buttons
+│   ├── add_book.php                 # Admin only
+│   ├── edit_book.php                # Admin only
+│   ├── view_requests.php            # Approve/Reject book requests
+│   └── logout.php
+├── client/
+│   ├── login.php                     # Client login (Student ID/name)
+│   ├── dashboard.php                # Client homepage
+│   ├── view_books.php               # No edit/delete; only search + request
+│   ├── request_book.php             # Form to request book
+│   ├── my_requests.php              # Student sees their requests
+│   └── logout.php
+├── database/
+│   └── init.sql                      # SQL file to create tables
+
+
+---
+
+🔄 Summary of What We’re Doing:
+
+Folder	Purpose
+
+admin/	Interface and actions for admin (CRUD, approvals)
+client/	Interface for student login, book view, and request
+backend/	PHP logic for form actions (inserts, updates, login, etc.)
+docs/	Requirement and planning documentation
+database/	SQL schema for tables like book, users, requests
+
+
+
+---
+
+✅ Next Steps:
+
+Now that we’ve established this structure:
+
+➤ Do you want me to help:
+
+🔐 Create the login system (admin & client) first?
+OR
+
+🧩 Start separating the current pages into /admin and /client folders?
+
+
+Let me know your preference, and I’ll begin that next step for you.
 
