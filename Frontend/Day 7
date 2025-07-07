@@ -1,4 +1,4 @@
-itPerfect! Since you're required to include both a Client Side (students) and an Admin Side (librarian/staff), here's how we’ll divide and plan things going forward.
+ititPerfect! Since you're required to include both a Client Side (students) and an Admin Side (librarian/staff), here's how we’ll divide and plan things going forward.
 
 
 ---
@@ -196,4 +196,183 @@ OR
 
 
 Let me know your preference, and I’ll begin that next step for you.
+
+
+
+Awesome! Welcome to Day 7 — today we officially split your project into Admin and Client sides using the structure we planned.
+
+
+---
+
+✅ Day 7: Separate Admin & Client Interfaces
+
+
+---
+
+🎯 Today’s Goals:
+
+1. Move & clean up your view_books.php into:
+
+/admin/view_books.php with Edit/Delete buttons
+
+/client/view_books.php with search only and a Request Book button
+
+
+
+2. Setup basic folder layout
+
+
+3. Verify both sides show their correct version
+
+
+
+
+---
+
+🧱 Step 1: Create Folders
+
+In your project root, create two folders:
+
+/admin
+/client
+
+> You can move the working view_books.php into /admin/view_books.php first.
+
+
+
+
+---
+
+🛠 Step 2: Create /admin/view_books.php
+
+Move your existing file (view_books.php with search + edit/delete buttons) into /admin/.
+✅ No changes needed for now — admin sees full controls.
+
+
+---
+
+🆕 Step 3: Create /client/view_books.php
+
+Create a new version of the page for students — it removes Edit/Delete buttons, but keeps Search and adds a "Request Book" button.
+
+
+---
+
+✅ /client/view_books.php (clean version for students)
+
+<?php
+include '../backend/db.php';
+
+$search = '';
+if (isset($_GET['search'])) {
+    $search = trim($_GET['search']);
+    $sql = "SELECT * FROM book WHERE is_deleted = FALSE AND 
+            (title LIKE ? OR author LIKE ? OR isbn LIKE ?)";
+    $searchParam = "%$search%";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $searchParam, $searchParam, $searchParam);
+} else {
+    $sql = "SELECT * FROM book WHERE is_deleted = FALSE";
+    $stmt = $conn->prepare($sql);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Library - View Books</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="p-5 bg-light">
+<div class="container">
+  <h2 class="mb-4">Available Books</h2>
+
+  <form method="GET" class="mb-3">
+    <input type="text" name="search" placeholder="Search by title, author, ISBN"
+           value="<?= htmlspecialchars($search) ?>" class="form-control" />
+    <button type="submit" class="btn btn-secondary mt-2">Search</button>
+  </form>
+
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>ISBN</th>
+        <th>Category</th>
+        <th>Quantity</th>
+        <th>Action</th> <!-- Request Book -->
+      </tr>
+    </thead>
+    <tbody>
+      <?php if ($result->num_rows > 0): ?>
+        <?php while($row = $result->fetch_assoc()): ?>
+          <tr>
+            <td><?= htmlspecialchars($row['title']) ?></td>
+            <td><?= htmlspecialchars($row['author']) ?></td>
+            <td><?= htmlspecialchars($row['isbn']) ?></td>
+            <td><?= htmlspecialchars($row['category']) ?></td>
+            <td><?= $row['quantity'] ?></td>
+            <td>
+              <a href="request_book.php?book_id=<?= $row['book_id'] ?>" class="btn btn-sm btn-primary">Request</a>
+            </td>
+          </tr>
+        <?php endwhile; ?>
+      <?php else: ?>
+        <tr><td colspan="6" class="text-center">No books found.</td></tr>
+      <?php endif; ?>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
+
+<?php
+$stmt->close();
+$conn->close();
+?>
+
+
+---
+
+✅ What You Achieved Today:
+
+✅ Created /admin/ and /client/ folders
+
+✅ Moved old view_books.php to Admin side (with edit/delete)
+
+✅ Made a new Client view with Request Book action
+
+✅ Pages work independently
+
+
+
+---
+
+📦 Deliverables for Day 7:
+
+✅ Admin can still manage books
+
+✅ Client can search and request books
+
+✅ Project is now modular and maintainable
+
+
+
+---
+
+🔜 Next Step — Day 8 Plan:
+
+Add Book Request System
+
+Client will use request_book.php to send a request
+
+Admin will use view_requests.php to approve/reject
+
+
+Shall we proceed with Day 8: Request Book System?
+
 
