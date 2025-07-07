@@ -1,0 +1,129 @@
+Perfect! Since you're required to include both a Client Side (students) and an Admin Side (librarian/staff), here's how we’ll divide and plan things going forward.
+
+
+---
+
+✅ Admin Side vs Client Side
+
+Feature	Admin Side 🧑‍💼	Client Side 👨‍🎓
+
+Add, Edit, Delete Books	✅ Yes (Full CRUD)	❌ No
+Search / View All Books	✅ Yes	✅ Yes
+Issue/Request Books	✅ Approve/Deny requests	✅ Can request books
+Login/Authentication	✅ Required (admin credentials)	✅ Required (student login/ID)
+View Issued Requests	✅ See all issued/pending requests	✅ See only their own requests
+
+
+
+---
+
+🔧 Changes to Make Before Moving Forward
+
+1. 🗂️ Folder Restructure
+
+Separate the two interfaces:
+
+/admin/
+  ├── add_book.php
+  ├── edit_book.php
+  ├── view_books.php
+  ├── delete_book.php
+  └── login.php (for admin)
+/client/
+  ├── view_books.php
+  ├── request_book.php
+  ├── login.php (for student)
+
+
+---
+
+2. 🔑 Login System (Minimal)
+
+We'll add simple session-based login for both roles:
+
+Admin: Hardcoded login (for simplicity)
+
+Client: Login with student ID (optional validation)
+
+
+We'll create:
+
+admin/login.php — Admin enters username/password
+
+client/login.php — Student enters ID/Name to log in
+
+
+And protect pages with:
+
+session_start();
+if (!isset($_SESSION['admin_logged_in'])) {
+  header("Location: login.php");
+  exit;
+}
+
+
+---
+
+3. ✅ Restrict Actions
+
+Admin pages can show Edit/Delete buttons.
+
+Client pages will only allow:
+
+Viewing books
+
+Searching
+
+Requesting to issue a book
+
+
+
+
+---
+
+4. 📋 Create a Book Request System
+
+Client side can request a book:
+
+A requests table will store: request_id, student_name, book_id, status (Pending, Approved, Rejected)
+
+
+Admin can then:
+
+View all requests
+
+Approve or reject them
+
+
+
+---
+
+🧩 What to Do Next?
+
+Let’s finalize the basic admin-client structure in this order:
+
+👉 Step Plan:
+
+1. ✅ Split view_books.php into:
+
+/admin/view_books.php (with Edit/Delete)
+
+/client/view_books.php (readonly + request button)
+
+
+
+2. ✅ Add basic session-based login for both
+
+
+3. 🆕 Add "Request Book" feature for clients
+
+
+4. 🆕 Add "Approve/Reject Requests" panel for admin
+
+
+
+
+---
+
+Let me know and I’ll begin with Step 1: Splitting the code into Admin and Client folders + removing admin actions from client side view. Shall I proceed with that?
+
