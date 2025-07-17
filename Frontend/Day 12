@@ -1,0 +1,325 @@
+Day 12: Navigation Menus & UI Polish
+
+Today we’ll make your project feel like a real app by adding shared layouts (header, navbar, footer), consistent styling, and easy navigation across pages for both Admin and Client roles.
+
+
+---
+
+🎯 Goals for Day 12
+
+1. Create shared header/footer include files (DRY principle).
+
+
+2. Add Bootstrap navbars for Admin & Client areas.
+
+
+3. Add flash (success/error) alert helper.
+
+
+4. Update major pages to use the shared layout.
+
+
+5. Add role-based landing (index.php redirect) for convenience.
+
+
+
+
+---
+
+🗂 Recommended Structure Update
+
+SmartLibraryProject/
+├── includes/
+│   ├── admin_header.php
+│   ├── client_header.php
+│   ├── footer.php
+│   └── flash.php          # optional helper for alerts
+├── admin/
+│   ├── login.php
+│   ├── dashboard.php
+│   ├── view_books.php
+│   ├── add_book.php
+│   ├── edit_book.php
+│   ├── view_requests.php
+│   ├── logout.php
+├── client/
+│   ├── login.php
+│   ├── dashboard.php
+│   ├── view_books.php
+│   ├── request_book.php
+│   ├── my_requests.php
+│   ├── logout.php
+├── backend/
+│   ├── db.php
+│   ├── insert_book.php
+│   ├── update_book.php
+│   ├── delete_book.php
+│   ├── handle_request.php
+│   ├── handle_request_update.php
+├── index.php               # landing: choose Admin or Student
+
+
+---
+
+1. Shared Footer (/includes/footer.php)
+
+<?php /* /includes/footer.php */ ?>
+    </div> <!-- closes container opened in header -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
+
+
+---
+
+2. Flash Helper (/includes/flash.php)
+
+Use session to show one-time alerts.
+
+<?php
+// call set_flash('success','Book added!') before redirect
+function set_flash($type, $msg) {
+    $_SESSION['flash'] = ['type'=>$type, 'msg'=>$msg];
+}
+
+function show_flash() {
+    if (!empty($_SESSION['flash'])) {
+        $type = $_SESSION['flash']['type']; // success, danger, warning, info
+        $msg  = $_SESSION['flash']['msg'];
+        echo "<div class='alert alert-$type alert-dismissible fade show' role='alert'>"
+           . htmlspecialchars($msg)
+           . "<button type='button' class='btn-close' data-bs-dismiss='alert'></button></div>";
+        unset($_SESSION['flash']);
+    }
+}
+
+
+---
+
+3. Admin Header (/includes/admin_header.php)
+
+<?php
+// /includes/admin_header.php
+session_start();
+if (!isset($_SESSION['admin_logged_in'])) {
+    header("Location: ../admin/login.php");
+    exit;
+}
+require_once __DIR__ . '/flash.php'; // flash helpers
+
+function nav_active($page) {
+    return basename($_SERVER['PHP_SELF']) === $page ? 'active' : '';
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin - Smart Library</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="../admin/dashboard.php">Smart Library (Admin)</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="adminNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link <?= nav_active('dashboard.php') ?>" href="../admin/dashboard.php">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <?= nav_active('add_book.php') ?>" href="../admin/add_book.php">Add Book</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <?= nav_active('view_books.php') ?>" href="../admin/view_books.php">Manage Books</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <?= nav_active('view_requests.php') ?>" href="../admin/view_requests.php">Requests</a>
+        </li>
+      </ul>
+      <a href="../admin/logout.php" class="btn btn-outline-light btn-sm">Logout</a>
+    </div>
+  </div>
+</nav>
+<div class="container mb-5">
+<?php show_flash(); ?>
+
+
+---
+
+4. Client Header (/includes/client_header.php)
+
+<?php
+// /includes/client_header.php
+session_start();
+if (!isset($_SESSION['student_id'])) {
+    header("Location: ../client/login.php");
+    exit;
+}
+require_once __DIR__ . '/flash.php';
+
+function nav_active($page) {
+    return basename($_SERVER['PHP_SELF']) === $page ? 'active' : '';
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student - Smart Library</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-primary bg-primary mb-4" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="../client/dashboard.php">Smart Library</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#clientNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="clientNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link <?= nav_active('dashboard.php') ?>" href="../client/dashboard.php">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <?= nav_active('view_books.php') ?>" href="../client/view_books.php">Browse Books</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <?= nav_active('my_requests.php') ?>" href="../client/my_requests.php">My Requests</a>
+        </li>
+      </ul>
+      <span class="navbar-text me-3">
+        <?php echo htmlspecialchars($_SESSION['student_name']); ?>
+      </span>
+      <a href="../client/logout.php" class="btn btn-outline-light btn-sm">Logout</a>
+    </div>
+  </div>
+</nav>
+<div class="container mb-5">
+<?php show_flash(); ?>
+
+
+---
+
+5. Update Pages to Use Headers/Footers
+
+Example: /admin/view_books.php (shortened)
+
+<?php include '../includes/admin_header.php'; ?>
+<?php include '../backend/db.php'; ?>
+
+<h2 class="mb-4">Manage Books</h2>
+
+<!-- existing search + table code here (unchanged structurally) -->
+
+<?php include '../includes/footer.php'; ?>
+
+Example: /client/view_books.php
+
+<?php include '../includes/client_header.php'; ?>
+<?php include '../backend/db.php'; ?>
+
+<h2 class="mb-4">Available Books</h2>
+
+<!-- existing search + table + Request button -->
+
+<?php include '../includes/footer.php'; ?>
+
+Repeat for: add_book.php, edit_book.php, view_requests.php, my_requests.php, request_book.php, dashboards, etc.
+
+
+---
+
+6. Using Flash Messages (Example)
+
+When an admin successfully adds a book in /backend/insert_book.php:
+
+<?php
+session_start();
+include 'db.php';
+include '../includes/flash.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // ... collect and insert ...
+    if ($stmt->execute()) {
+        set_flash('success', 'Book added successfully!');
+        header("Location: ../admin/view_books.php");
+        exit;
+    } else {
+        set_flash('danger', 'Error adding book: '.$stmt->error);
+        header("Location: ../admin/add_book.php");
+        exit;
+    }
+}
+
+Because show_flash() is called in the header include, the alert displays automatically.
+
+
+---
+
+7. Root Landing Page (index.php)
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Library - Welcome</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light p-5">
+<div class="container text-center mt-5">
+  <h1 class="mb-4">Smart Library Book Management System</h1>
+  <p class="mb-4">Select your portal:</p>
+  <a href="admin/login.php" class="btn btn-dark btn-lg me-3">Admin Portal</a>
+  <a href="client/login.php" class="btn btn-primary btn-lg">Student Portal</a>
+</div>
+</body>
+</html>
+
+
+---
+
+8. Quick Visual Polish Ideas (Optional Today)
+
+Add favicon or logo (even a placeholder).
+
+Use Bootstrap cards on dashboards.
+
+Add table responsive wrapper: <div class="table-responsive">...</div> for mobile.
+
+Use <input class="form-control form-control-sm"> for compact search fields.
+
+
+
+---
+
+✅ Day 12 Checklist
+
+[ ] /includes/ folder created
+
+[ ] admin_header.php + client_header.php + footer.php in place
+
+[ ] Flash helper working
+
+[ ] All key pages updated to include the correct header/footer
+
+[ ] Root index.php created for entry
+
+
+
+---
+
+🔜 Day 13 Preview: UI Enhancement + Validation
+
+Improve forms with basic validation & tooltips
+
+Show quantities with badges (e.g., “Out of stock”)
+
+Optional: pagination for large book lists
+
+
+
+---
+
+Let me know once you’ve created the includes and updated one page. I can review your code before you update all pages—just paste or upload a file and I’ll check it. Ready to continue?
+
