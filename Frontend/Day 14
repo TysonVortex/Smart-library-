@@ -1,0 +1,195 @@
+Great! Day 14 is about Deployment so you can run this project on your local machine with XAMPP/WAMP or deploy it online.
+
+
+---
+
+✅ Day 14: Deployment Guide for Smart Library Project
+
+
+---
+
+🎯 Goals:
+
+1. Setup the project in XAMPP/WAMP on Windows (or LAMP on Linux/Mac).
+
+
+2. Configure MySQL database and import schema.
+
+
+3. Test the application (Admin & Client portals).
+
+
+4. Tips for optional online hosting.
+
+
+
+
+---
+
+✅ Step 1: Install Required Software
+
+XAMPP: Download here
+
+(Alternative) WAMP or MAMP for Windows/Mac.
+
+
+XAMPP includes:
+
+Apache (for PHP)
+
+MySQL (MariaDB)
+
+PHPMyAdmin (DB GUI)
+
+
+
+---
+
+✅ Step 2: Place Project in htdocs
+
+1. Extract SmartLibraryProject_Final.zip to:
+
+C:\xampp\htdocs\SmartLibraryProject
+
+
+2. Folder structure will look like:
+
+C:\xampp\htdocs\SmartLibraryProject\
+  ├── admin/
+  ├── client/
+  ├── backend/
+  ├── includes/
+  ├── database/
+  ├── docs/
+  └── index.php
+
+
+
+
+---
+
+✅ Step 3: Start Apache & MySQL
+
+1. Open XAMPP Control Panel.
+
+
+2. Start Apache and MySQL.
+
+
+
+
+---
+
+✅ Step 4: Import Database
+
+1. Go to http://localhost/phpmyadmin
+
+
+2. Click Databases → Create new DB: smart_library
+
+
+3. Select the DB → Import → Choose file:
+
+SmartLibraryProject/database/init.sql
+
+
+4. Click Go.
+✅ This creates tables: book, book_requests.
+
+
+
+
+---
+
+✅ Step 5: Update DB Config (if needed)
+
+Check /backend/db.php:
+
+$host = 'localhost';
+$user = 'root';
+$password = ''; // default for XAMPP
+$db = 'smart_library';
+
+If you use a different username/password, update here.
+
+
+---
+
+✅ Step 6: Access the App
+
+Open:
+
+http://localhost/SmartLibraryProject/
+
+You will see: ✔ Landing Page → Choose Admin or Student portal
+
+Admin Login:
+
+Username: admin
+
+Password: admin123
+
+
+Student Login:
+
+Any Name & Student ID (e.g., John Doe, S101)
+
+
+
+---
+
+✅ Step 7: Test Features
+
+✔ Admin:
+
+Add / Edit / Delete (Soft) Books
+
+View Books (with Pagination)
+
+View Requests → Approve / Reject
+
+
+✔ Student:
+
+Browse Books (with Pagination)
+
+Request a Book
+
+View My Requests & Status
+
+
+
+---
+
+✅ Optional: Online Deployment
+
+1. Buy a domain & hosting (or use free hosting like InfinityFree).
+
+
+2. Upload files via FTP or cPanel.
+
+
+3. Create MySQL DB on the hosting platform → Import init.sql.
+
+
+4. Update backend/db.php with the hosting DB credentials.
+
+
+5. Ensure PHP version >= 7.4.
+
+
+
+
+---
+
+✅ Deliverables for Day 14:
+
+✔ Full local deployment guide
+✔ Project ready to run on XAMPP/WAMP
+
+
+---
+
+📸 Do you want me to prepare a screenshot-based PDF Deployment Guide (Step by Step with images) and include it in your project folder?
+Or should I move to Day 15: Extra Features (Export to PDF/CSV, Search Filters, Email Notifications)?
+
